@@ -24,7 +24,7 @@
     ], function(Map, MapView, FeatureLayer) {
 
       var map = new Map({
-        basemap: "topo-vector"
+        basemap: "streets"
       });
       
       var view = new MapView({
@@ -33,94 +33,34 @@
         center: [-118.71511,34.09042],
         zoom: 10
       });
-        var popupTrailheads = {
-    "title": "Trailhead",
-    "content": "<b>Trail:</b> {TRL_NAME}<br><b>City:</b> {CITY_JUR}<br><b>Cross Street:</b> {X_STREET}<br><b>Parking:</b> {PARKING}<br><b>Elevation:</b> {ELEV_FT} ft"
-  }
-
-  // Create the layer and set the popup
-  var trailheads = new FeatureLayer({
-    url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trailheads_Styled/FeatureServer/0",
-    outFields: ["TRL_NAME","CITY_JUR","X_STREET","PARKING","ELEV_FT"],
-    popupTemplate: popupTrailheads
-  });
-
-  // Add the layer
-  map.add(trailheads);
-
-   var popupTrails = {
-    "title": "Trail Information",
-    "content": function(){
-       return "This is {TRL_NAME} with {ELEV_GAIN} ft of climbing.";
-    }
-  }
-
-  // Create the layer and set the renderer
-  var trails = new FeatureLayer({
-    url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trails_Styled/FeatureServer/0",
-    outFields: ["TRL_NAME","ELEV_GAIN"],
-    popupTemplate: popupTrails
-  });
-
-  // Add the layer
-  map.add(trails,0);
-
-   var popupOpenspaces = {
-    "title": "{PARK_NAME}",
-    "content": [{
-      "type": "fields",
-      "fieldInfos": [
-        {
-          "fieldName": "AGNCY_NAME",
-          "label": "Agency",
-          "isEditable": true,
-          "tooltip": "",
-          "visible": true,
-          "format": null,
-          "stringFieldOption": "textbox"
-        },
-        {
-          "fieldName": "TYPE",
-          "label": "Type",
-          "isEditable": true,
-          "tooltip": "",
-          "visible": true,
-          "format": null,
-          "stringFieldOption": "textbox"
-        },
-        {
-          "fieldName": "ACCESS_TYP",
-          "label": "Access",
-          "isEditable": true,
-          "tooltip": "",
-          "visible": true,
-          "format": null,
-          "stringFieldOption": "textbox"
-        },
-        {
-          "fieldName": "GIS_ACRES",
-          "label": "Acres",
-          "isEditable": true,
-          "tooltip": "",
-          "visible": true,
-          "format": {
-            "places": 2,
-            "digitSeparator": true
-          },
-          "stringFieldOption": "textbox"
+       
+      //code that adds the image to the crash locations 
+      var crashesRenderer = {
+        "type": "simple",
+        "symbol": {
+        "type": "picture-marker",
+        "url": "https://cdn0.iconfinder.com/data/icons/car-crash/500/accident-512.png",
+        "width": 13.5,
+        "height": 13.5
         }
-      ]
-    }]
-  }
+      }
 
-  var openspaces = new FeatureLayer({
-    url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Parks_and_Open_Space_Styled/FeatureServer/0",
-    outFields: ["TYPE","PARK_NAME", "AGNCY_NAME","ACCESS_TYP","GIS_ACRES"],
-    popupTemplate: popupOpenspaces
-  });
+      var popupCrashes = {
+        "title": "Accident",
+        "content": "<b>Primary Rode:</b> {primary_rd}<br><b>Secondary Rode:</b> {secondary_rd}<br><b>Date and Time of Collision:</b> {collision_date}"
 
-  // Add the layer
-  map.add(openspaces,0);
+      }
+
+      // Create the layer and set the renderer
+      var crashes = new FeatureLayer({
+        url: "https://services9.arcgis.com/sKQTt5HpVTiXYa4g/arcgis/rest/services/lacollisions_2012through2016/FeatureServer",
+        outFields: ["primary_rd","secondary_rd","collision_date","collision_time"],
+        renderer: crashesRenderer,
+        popupTemplate: popupCrashes
+      });
+
+      // Add the layer
+      map.add(crashes);
       
     });
   </script>
